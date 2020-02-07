@@ -1,0 +1,20 @@
+#board {  
+  animation: moveIn .8s ease 0s 1 normal forwards;
+  display: flex;
+  flex-wrap: wrap;
+  width: 480px;
+  height: 480px;
+  border: 0.2em solid tan;
+  background-color: burlywood;
+  box-shadow: 0 0.3em 2em 0.4em rgba(0, 0, 0, 0.3);
+}
+
+#board .row:nth-child(odd) .cell:nth-child(even),
+.row:nth-child(even) .cell:nth-child(odd) {
+  background-color: rgba(0,0,0,.6);
+}
+
+.cell {
+  width: 60px;
+  height: 60px;
+}
