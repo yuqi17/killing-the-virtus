@@ -10,12 +10,16 @@ const roles = {
 
 export default class ChessMan extends Component {
 
+  handleClick = (e)=>{
+    // e.stopPropagation();
+    const { roleType } = this.props;
+    this.props.onClick(roleType)
+  }
+
   render() {
     const { roleType } = this.props;
-
     return (
-      <div className={roles[roleType]}>
-      </div>
+      <div onClick={this.handleClick} className={roles[roleType]}/>
     )
   }
 }
