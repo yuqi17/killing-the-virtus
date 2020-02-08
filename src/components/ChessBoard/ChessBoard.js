@@ -34,7 +34,6 @@ export default class ChessBoard extends Component {
     return newArr
   }
 
-  
   handleChessBoardCellClick = (e)=>{
     
     const col = Math.floor(e.clientX / CELL_SIZE)
@@ -61,16 +60,20 @@ export default class ChessBoard extends Component {
         return console.log('2')
       }
 
+      
+      if(this.memo.length === 0){
+        this.memo.push({
+          map:this.mapArr,
+          actions:[
+            {
+              target:this.selectedChessMan.view,
+              op: 'move'
+            }
+          ]
+        })
+      }
+      
       //change data
-      this.memo.push({
-        map:this.mapArr,
-        actions:[
-          {
-            target:this.selectedChessMan.view,
-            op: 'move'
-          }
-        ]
-      })
       this.mapArr = this.calc(this.mapArr, row1, col1, row, col)
       //change view
       this.selectedChessMan.view.style.transform += `translate(${(col - col1) * CELL_SIZE}px,${(row - row1) * CELL_SIZE}px)`
@@ -88,8 +91,7 @@ export default class ChessBoard extends Component {
               op:'kill'
             },
           ]
-        }
-        )
+        })
       }
       else{
         this.memo.push({
@@ -116,21 +118,20 @@ export default class ChessBoard extends Component {
       const { actions, map } = this.memo.pop()
 
       this.mapArr = map
-      
+
       actions.forEach(action =>{
         const { target, op} = action
         if(op === 'kill')
         {
-          target.style = 'block'
+          target.style.display = 'block'
         } else {
           this.moveBack(target)
         }
       })
-      console.log(map)
-      
   }
 
   startMemo = () =>{
+    console.log(this.memo.length)
     const timer = setInterval(() => {
       if(this.memo.length === 0){
         return window.clearInterval(timer)
