@@ -1,4 +1,6 @@
-
+.chessMan{
+  transition:transform ease .3s;
+}
 
 .bat{
   background-image: url(./bat.png);

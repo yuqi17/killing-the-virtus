@@ -31,13 +31,13 @@ export default class ChessBoard extends Component {
         type, row, col
       };
     } else {
-      const { type1, row:row1, col:col1 } = this.selectedChessMan
+
+      const { type:type1, row:row1, col:col1 } = this.selectedChessMan
 
       if(type1 === 0)
         return
       if(row1 === row && col1 === col)
         return
-
       if(type1 === type)
         return
       
@@ -46,10 +46,8 @@ export default class ChessBoard extends Component {
       this.mapArr[row][col] = type
 
       const dom = ReactDOM.findDOMNode(this.refs[`${row1}-${col1}`])
-      console.log(dom)
-      dom.style.transform = `translate(${(row - row1) * CELL_SIZE}px,${(col - col1) * CELL_SIZE}px)`
-
-
+      // console.log(dom.style.transform)
+      dom.style.transform = `translate(${(col - col1) * CELL_SIZE}px,${(row - row1) * CELL_SIZE}px)`
       this.selectedChessMan = null
     }
   }
