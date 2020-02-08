@@ -1,12 +1,19 @@
-import React from 'react';
-import ChessBoard from './components/ChessBoard';
+import ChessBoard from './components/ChessBoard/ChessBoard';
+import React, { Component } from 'react'
 
-function App() {
-  return (
-    <div className="App">
-      <ChessBoard/>
-    </div>
-  );
+export default class App extends Component {
+
+  handleClick = () => {
+    this.refs.board.startMemo()
+  }
+
+  render() {
+    return (
+      <div className="App">
+        <ChessBoard ref='board'/>
+        <button onClick={this.handleClick}>start</button>
+      </div>
+    )
+  }
 }
 
-export default App;

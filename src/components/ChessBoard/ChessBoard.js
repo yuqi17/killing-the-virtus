@@ -2,7 +2,7 @@
 
 import React, { Component } from 'react'
 import './index.css'
-import ChessMan from '../ChessMan'
+import ChessMan from '../ChessMan/ChessMan'
 
 const CELL_SIZE = 60;
 
@@ -72,12 +72,12 @@ export default class ChessBoard extends Component {
       //change view
       this.memo.push({
         target:this.selectedChessMan.view,
-        op:''
+        op: this.selectedChessMan.view.style.transform
       })
       this.selectedChessMan.view.style.transform += `translate(${(col - col1) * CELL_SIZE}px,${(row - row1) * CELL_SIZE}px)`
       this.memo.push({
         target:this.selectedChessMan.view,
-        op:`translate(${(col - col1) * CELL_SIZE}px,${(row - row1) * CELL_SIZE}px)`
+        op: this.selectedChessMan.view.style.transform
       })
 
       if(this.mapArr[row][col] !== 0){
@@ -92,8 +92,18 @@ export default class ChessBoard extends Component {
         })
       }
       this.selectedChessMan = null
-      console.log(this.memo)
+      
     }
+  }
+
+  startMemo = () =>{
+    // console.log(this.memo)
+    const item = this.memo.pop()
+    if(this.memo.length === 0)
+      return
+    const { target, op } = item
+    console.log(target, op)
+    target.style = op;
   }
 
   render() {
