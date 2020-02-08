@@ -9,11 +9,11 @@ export default class ChessBoard extends Component {
 
   state = {
     mapArr:[
+      [1, 0, 0, 0, 0, 0, 0, 1],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
+      [1, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
       [1, 1, 0, 0, 0, 0, 0, 1],
       [0, 0, 0, 0, 0, 0, 0, 0]
@@ -25,10 +25,10 @@ export default class ChessBoard extends Component {
     return (
       <div id="board">
       {
-        mapArr.map((row,i)=><div className='row'>
+        mapArr.map((_,col)=><div className='col'>
         {
-          row.map((cell,j) => <div className='cell'>
-            <ChessMan roleType={cell}/>
+          _.map((_,row) => <div className='cell'>
+            <ChessMan roleType={mapArr[row][col]}/>
           </div>)
         }
         </div>)

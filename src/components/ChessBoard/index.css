@@ -1,5 +1,4 @@
 #board {  
-  animation: moveIn .8s ease 0s 1 normal forwards;
   display: flex;
   flex-wrap: wrap;
   width: 480px;
@@ -7,10 +6,11 @@
   border: 0.2em solid tan;
   background-color: burlywood;
   box-shadow: 0 0.3em 2em 0.4em rgba(0, 0, 0, 0.3);
+  /* transform: rotateZ(90deg) rotateX(180deg); */
 }
 
-#board .row:nth-child(odd) .cell:nth-child(even),
-.row:nth-child(even) .cell:nth-child(odd) {
+#board .col:nth-child(odd) .cell:nth-child(even),
+.col:nth-child(even) .cell:nth-child(odd) {
   background-color: rgba(0,0,0,.6);
 }
 
