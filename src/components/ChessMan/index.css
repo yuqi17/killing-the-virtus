@@ -1,5 +1,5 @@
 .chessMan{
-  transition:transform ease .3s;
+  transition:all ease .3s;
 }
 
 .bat{
