@@ -83,9 +83,7 @@ export default class ChessBoard extends Component {
         this.mapArr.map((_,col)=><div className='col' key={col}>
         {
           _.map((_,row) => <div onClick={this.handleChessBoardCellClick} className='cell' key={`${row}-${col}`}>
-            <ChessMan ref={`${row}-${col}`}
-              roleType={this.mapArr[row][col]} 
-            />
+            <ChessMan roleType={this.mapArr[row][col]}/>
           </div>)
         }
         </div>)
