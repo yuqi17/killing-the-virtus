@@ -2,9 +2,7 @@
 
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom';
-
 import './index.css'
-
 import ChessMan from '../ChessMan'
 
 const CELL_SIZE = 60;
