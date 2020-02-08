@@ -27,12 +27,12 @@ export default class ChessBoard extends Component {
   selectedChessMan = null
   memo = []
 
-  // calc(arr, row1,col1,row,col){
-  //   const newArr = JSON.parse(JSON.stringify(arr))//arr.slice(0)//[...arr];
-  //   newArr[row][col] = newArr[row1][col1]
-  //   newArr[row1][col1] = 0
-  //   return newArr
-  // }
+  calc(arr, row1,col1,row,col){
+    const newArr = JSON.parse(JSON.stringify(arr))//arr.slice(0)//[...arr];
+    newArr[row][col] = newArr[row1][col1]
+    newArr[row1][col1] = 0
+    return newArr
+  }
 
   
   handleChessBoardCellClick = (e)=>{
@@ -51,59 +51,92 @@ export default class ChessBoard extends Component {
       const type = this.mapArr[row][col];
       const { type:type1, row:row1, col:col1 } = this.selectedChessMan
       
-      console.log(row1, col1, row, col)
       if(row1 === row && col1 === col){
         this.selectedChessMan = null
-        return
+        return console.log('1')
       }
         
       if(type1 === type){
         this.selectedChessMan = null
-        return
+        return console.log('2')
       }
 
       //change data
-      console.log(this.mapArr)
-      this.mapArr[row][col] = this.mapArr[row1][col1]
-      this.mapArr[row1][col1] = 0
-      // this.mapArr = this.calc(this.mapArr, row1, col1, row, col)
-      console.log(this.mapArr)
-
+      this.memo.push({
+        map:this.mapArr,
+        actions:[
+          {
+            target:this.selectedChessMan.view,
+            op: 'move'
+          }
+        ]
+      })
+      this.mapArr = this.calc(this.mapArr, row1, col1, row, col)
       //change view
-      this.memo.push({
-        target:this.selectedChessMan.view,
-        op: this.selectedChessMan.view.style.transform
-      })
       this.selectedChessMan.view.style.transform += `translate(${(col - col1) * CELL_SIZE}px,${(row - row1) * CELL_SIZE}px)`
-      this.memo.push({
-        target:this.selectedChessMan.view,
-        op: this.selectedChessMan.view.style.transform
-      })
-
-      if(this.mapArr[row][col] !== 0){
-        this.memo.push({
-          target:this.selectedChessMan.view,
-          op:'block'
-        })
+      if(type !== 0){
         chessManView.style.display = 'none'
         this.memo.push({
-          target:chessManView,
-          op:'none'
+          map:this.mapArr,
+          actions:[
+            {
+              target:this.selectedChessMan.view,
+              op: 'move'
+            },
+            {
+              target:chessManView,
+              op:'kill'
+            },
+          ]
+        }
+        )
+      }
+      else{
+        this.memo.push({
+          map:this.mapArr,
+          actions:[
+            {
+              target:this.selectedChessMan.view,
+              op: 'move'
+            }
+          ]
         })
       }
       this.selectedChessMan = null
-      
     }
   }
 
+  moveBack(target){
+    const arr = target.style.transform.replace(/, /g,'*').split(' ')
+    arr.pop()
+    target.style.transform = arr.map(t => t.replace('*', ',')).join(' ')
+  }
+
+  memoLastStep(){
+      const { actions, map } = this.memo.pop()
+
+      this.mapArr = map
+      
+      actions.forEach(action =>{
+        const { target, op} = action
+        if(op === 'kill')
+        {
+          target.style = 'block'
+        } else {
+          this.moveBack(target)
+        }
+      })
+      console.log(map)
+      
+  }
+
   startMemo = () =>{
-    // console.log(this.memo)
-    const item = this.memo.pop()
-    if(this.memo.length === 0)
-      return
-    const { target, op } = item
-    console.log(target, op)
-    target.style = op;
+    const timer = setInterval(() => {
+      if(this.memo.length === 0){
+        return window.clearInterval(timer)
+      }
+      this.memoLastStep()
+    }, 1000);
   }
 
   render() {
