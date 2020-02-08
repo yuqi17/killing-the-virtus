@@ -7,6 +7,7 @@ import ChessMan from '../ChessMan'
 const CELL_SIZE = 60;
 
 // update state  to render 不能和直接操作dom动画同时存在
+// 点击格子事件保证准确触发
 
 export default class ChessBoard extends Component {
 
@@ -30,7 +31,7 @@ export default class ChessBoard extends Component {
     return newArr
   }
 
-  // 用点击格子保证准确触发
+  
   handleChessBoardCellClick = (e)=>{
     const col = Math.floor(e.clientX / CELL_SIZE)
     const row = Math.floor(e.clientY / CELL_SIZE)
