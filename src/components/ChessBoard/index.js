@@ -67,10 +67,10 @@ export default class ChessBoard extends Component {
       console.log(this.mapArr)
 
       //change view
+      this.selectedChessMan.view.style.transform += `translate(${(col - col1) * CELL_SIZE}px,${(row - row1) * CELL_SIZE}px)`
       if(this.mapArr[row][col] !== 0){
         chessManView.style.display = 'none'
       }
-      this.selectedChessMan.view.style.transform += `translate(${(col - col1) * CELL_SIZE}px,${(row - row1) * CELL_SIZE}px)`
       this.selectedChessMan = null
     }
   }
