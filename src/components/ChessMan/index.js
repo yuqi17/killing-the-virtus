@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import './index.css'
 
 const roles = {
-  0:'',
+  0:'ground',
   1:'bat',
   2:'swords'
 }
@@ -11,9 +11,8 @@ const roles = {
 export default class ChessMan extends Component {
 
   handleClick = (e)=>{
-    // e.stopPropagation();
-    const { roleType } = this.props;
-    this.props.onClick(roleType)
+    const { roleType, row, col } = this.props;
+    this.props.onClick(roleType, row, col)
   }
 
   render() {

@@ -1,47 +1,68 @@
 
 
-import React, { Component } from 'react'
+import React, { Component, ReactDOM } from 'react'
 import './index.css'
 
 import ChessMan from '../ChessMan'
 
-function Cell({row,col,onClick,children}){
-  return <div className='cell' onClick={()=>onClick(row,col)}>{children}</div>
-}
-
 export default class ChessBoard extends Component {
 
-  state = {
-    mapArr:[
-      [1, 1, 1, 1, 1, 1, 1, 1],
-      [1, 1, 1, 1, 1, 1, 1, 1],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 2, 0, 0, 0, 0, 2, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0]
-    ]
-  }
+  mapArr = [
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [1, 1, 1, 1, 1, 1, 1, 1],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 2, 0, 0, 0, 0, 2, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0]
+  ]
 
-  handleCellClick = (row,col) => {
-    console.log(row,col)
-  }
+  selectedChessMan = null
 
-  handleChessManClick = (type)=>{
-    console.log(type)
+  handleChessManClick = (type, row, col)=>{
+    if(!this.selectedChessMan)
+    {
+      this.selectedChessMan = {
+        type, row, col
+      };
+    } else {
+      const { type1, row:row1, col:col1 } = this.selectedChessMan
+
+      if(type1 === 0)
+        return
+      if(row1 === row && col1 === col)
+        return
+
+      if(type1 === type)
+        return
+      
+      //change
+      this.mapArr[row1][col1] = 0
+      this.mapArr[row][col] = type
+
+      ReactDOM.findDOMNode(this.refs[`${row1}-${col1}`])
+  
+      // this.setState({
+      //   mapArr
+      // })
+      
+      this.selectedChessMan = null
+    }
   }
 
   render() {
-    const { mapArr } = this.state;
     return (
       <div id="board">
       {
-        mapArr.map((_,col)=><div className='col' key={col}>
+        this.mapArr.map((_,col)=><div className='col' key={col}>
         {
-          _.map((_,row) => <Cell onClick={this.handleCellClick} row={row} col={col} key={`${row}-${col}`}>
-            <ChessMan roleType={mapArr[row][col]} onClick={this.handleChessManClick}/>
-          </Cell>)
+          _.map((_,row) => <div className='cell' key={`${row}-${col}`}>
+            <ChessMan ref={`${row}-${col}`}
+              roleType={this.mapArr[row][col]} 
+              row={row} col={col} 
+              onClick={this.handleChessManClick}/>
+          </div>)
         }
         </div>)
       }

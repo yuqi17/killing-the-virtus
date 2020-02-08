@@ -3,17 +3,22 @@
 .bat{
   background-image: url(./bat.png);
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: contain;
   background-position: center;
-  width: 50px;
-  height: 30px;
+  width: inherit;
+  height: inherit;
+}
+
+.ground{
+  width: inherit;
+  height: inherit;
 }
 
 .swords{
   background-image: url(./swords.png);
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: 80% 80%;
   background-position: center;
-  width: 50px;
-  height: 50px;
+  width: inherit;
+  height: inherit;
 }
