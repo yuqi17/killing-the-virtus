@@ -5,7 +5,7 @@ import './index.css'
 const roles = {
   0:'',
   1:'bat',
-  2:'soilder'
+  2:'swords'
 }
 
 export default class ChessMan extends Component {
@@ -15,7 +15,6 @@ export default class ChessMan extends Component {
 
     return (
       <div className={roles[roleType]}>
-        !!
       </div>
     )
   }
