@@ -50,10 +50,12 @@ export default class ChessBoard extends Component {
       
       console.log(row1, col1, row, col)
       if(row1 === row && col1 === col){
+        this.selectedChessMan = null
         return
       }
         
       if(type1 === type){
+        this.selectedChessMan = null
         return
       }
 
