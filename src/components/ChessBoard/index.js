@@ -8,6 +8,7 @@ const CELL_SIZE = 60;
 
 // update state  to render 不能和直接操作dom动画同时存在
 // 点击格子事件保证准确触发
+// 二维数组若要做备忘录模式，需要深拷贝[...arr],slice(0) 都是浅拷贝
 
 export default class ChessBoard extends Component {
 
@@ -24,21 +25,22 @@ export default class ChessBoard extends Component {
 
   selectedChessMan = null
 
-  calc(arr, row1,col1,row,col){
-    const newArr = JSON.parse(JSON.stringify(arr))//arr.slice(0)//[...arr];
-    newArr[row][col] = newArr[row1][col1]
-    newArr[row1][col1] = 0
-    return newArr
-  }
+  // calc(arr, row1,col1,row,col){
+  //   const newArr = JSON.parse(JSON.stringify(arr))//arr.slice(0)//[...arr];
+  //   newArr[row][col] = newArr[row1][col1]
+  //   newArr[row1][col1] = 0
+  //   return newArr
+  // }
 
   
   handleChessBoardCellClick = (e)=>{
     const col = Math.floor(e.clientX / CELL_SIZE)
     const row = Math.floor(e.clientY / CELL_SIZE)
+    const chessManView = e.currentTarget.firstChild
     if(!this.selectedChessMan)
     {
       this.selectedChessMan = {
-        view:e.currentTarget.firstChild,
+        view:chessManView,
         type:this.mapArr[row][col], row, col
       };
     } else {
@@ -48,20 +50,24 @@ export default class ChessBoard extends Component {
       
       console.log(row1, col1, row, col)
       if(row1 === row && col1 === col){
-        this.selectedChessMan = null
-        return console.log('1')
+        return
       }
         
       if(type1 === type){
-        this.selectedChessMan = null
-        return console.log(2)
+        return
       }
 
+      //change data
       console.log(this.mapArr)
-      //change
-      this.mapArr = this.calc(this.mapArr, row1, col1, row, col)
+      this.mapArr[row][col] = this.mapArr[row1][col1]
+      this.mapArr[row1][col1] = 0
+      // this.mapArr = this.calc(this.mapArr, row1, col1, row, col)
       console.log(this.mapArr)
 
+      //change view
+      if(this.mapArr[row][col] !== 0){
+        chessManView.style.display = 'none'
+      }
       this.selectedChessMan.view.style.transform += `translate(${(col - col1) * CELL_SIZE}px,${(row - row1) * CELL_SIZE}px)`
       this.selectedChessMan = null
     }
