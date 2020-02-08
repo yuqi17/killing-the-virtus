@@ -1,9 +1,13 @@
 
 
-import React, { Component, ReactDOM } from 'react'
+import React, { Component } from 'react'
+import ReactDOM from 'react-dom';
+
 import './index.css'
 
 import ChessMan from '../ChessMan'
+
+const CELL_SIZE = 60;
 
 export default class ChessBoard extends Component {
 
@@ -41,12 +45,11 @@ export default class ChessBoard extends Component {
       this.mapArr[row1][col1] = 0
       this.mapArr[row][col] = type
 
-      ReactDOM.findDOMNode(this.refs[`${row1}-${col1}`])
-  
-      // this.setState({
-      //   mapArr
-      // })
-      
+      const dom = ReactDOM.findDOMNode(this.refs[`${row1}-${col1}`])
+      console.log(dom)
+      dom.style.transform = `translate(${(row - row1) * CELL_SIZE}px,${(col - col1) * CELL_SIZE}px)`
+
+
       this.selectedChessMan = null
     }
   }
