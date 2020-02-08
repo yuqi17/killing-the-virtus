@@ -67,7 +67,7 @@ export default class ChessBoard extends Component {
           actions:[
             {
               target:this.selectedChessMan.view,
-              op: 'move'
+              op: 'init'
             }
           ]
         })
