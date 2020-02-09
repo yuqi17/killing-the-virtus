@@ -177,22 +177,40 @@ export default class ChessBoard extends Component {
     })
   }
 
-  startMemo = (direction) =>{
-    let i = 1
-    const timer = setInterval(() => {
-      if(direction < 0){
-        if(this.memo.length - i < 0){
-          return window.clearInterval(timer)
-        }
-        this.memoLastStep(this.memo.length - i)
-      } else{
-        if(i - 1 === this.memo.length){
-          return window.clearInterval(timer)
-        }
-        this.memoNextStep(i - 1)
+  process(direction, i){
+    if(direction < 0){
+      if(this.memo.length - i < 0){
+        return true
       }
-      i++;
-    }, 1000);
+      this.memoLastStep(this.memo.length - i)
+    } else{
+      if(i - 1 >= this.memo.length){
+        return true
+      }
+      this.memoNextStep(i - 1)
+    }
+    return false
+  }
+
+  count = 1
+
+  startMemo = (direction, play) =>{
+    if(play === 1){
+      const timer = setInterval(() => {
+        if(this.process(direction, this.count))
+        {
+          this.count = 1
+          window.clearInterval(timer)
+        } else {
+          this.count++;
+        }
+      }, 1000);
+    } else {
+      // direction > 0 ? this.count++ : this.count --
+      
+      if(!this.process(direction, this.count))
+        this.count ++;
+    }
   }
 
   render() {

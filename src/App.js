@@ -4,19 +4,19 @@ import React, { Component } from 'react'
 export default class App extends Component {
 
   handleBackClick = () => {
-    this.refs.board.startMemo(-1)
+    this.refs.board.startMemo(-1,0)
   }
 
   handleForwardClick = () => {
-    this.refs.board.startMemo(1)
+    this.refs.board.startMemo(1,0)
   }
 
   handleBackPlayClick = () => {
-    this.refs.board.startMemo(-1)
+    this.refs.board.startMemo(-1,1)
   }
 
   handleForwardPlayClick = () => {
-    this.refs.board.startMemo(1)
+    this.refs.board.startMemo(1,1)
   }
 
   handleAutoPlay = () => {
