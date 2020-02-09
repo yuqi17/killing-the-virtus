@@ -180,11 +180,13 @@ export default class ChessBoard extends Component {
   process(direction, i){
     if(direction < 0){
       if(this.memo.length - i < 0){
+        this.count = 1
         return true
       }
       this.memoLastStep(this.memo.length - i)
     } else{
       if(i - 1 >= this.memo.length){
+        this.count = 1
         return true
       }
       this.memoNextStep(i - 1)
