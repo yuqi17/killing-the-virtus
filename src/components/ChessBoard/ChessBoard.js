@@ -49,10 +49,14 @@ export default class ChessBoard extends Component {
   }
 
   handleChessBoardCellClick = (e)=>{
-    
     const col = Math.floor(e.clientX / CELL_SIZE)
     const row = Math.floor(e.clientY / CELL_SIZE)
     const chessManView = e.currentTarget.firstChild
+    this.moveChessMan(chessManView, row, col)
+  }
+
+  moveChessMan = (chessManView, row, col)=>{
+    
     if(!this.selectedChessMan)
     {
       this.selectedChessMan = {
