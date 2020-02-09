@@ -220,7 +220,7 @@ export default class ChessBoard extends Component {
         } else {
           this.count++;
         }
-      }, 1000);
+      }, 300);
     } else {
       if(!this.process(direction, this.count))
         this.count ++;
