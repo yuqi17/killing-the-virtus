@@ -32,13 +32,14 @@ export default class App extends Component {
     return (
       <div className="App">
         <ChessBoard ref='board'/>
-        <button onClick={this.handleBackClick}>上一步</button>
-        <button onClick={this.handleForwardClick}>下一步</button>
-        <button onClick={this.handleBackPlayClick}>过程反演</button>
-        <button onClick={this.handleForwardPlayClick}>过程正演</button>
-        {/* <button onClick={this.handleTakeSnapshotClick}>编排快照</button>
-        <button onClick={this.handleAutoPlay}>自动编排演示</button> */}
-
+        <div className='controlBar'>
+          <button onClick={this.handleBackClick}>上一步</button>
+          <button onClick={this.handleForwardClick}>下一步</button>
+          <button onClick={this.handleBackPlayClick}>过程反演</button>
+          <button onClick={this.handleForwardPlayClick}>过程正演</button>
+          {/* <button onClick={this.handleTakeSnapshotClick}>编排快照</button>
+          <button onClick={this.handleAutoPlay}>自动编排演示</button> */}
+        </div>
       </div>
     )
   }

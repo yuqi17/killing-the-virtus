@@ -11,3 +11,15 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.App{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.controlBar{
+  overflow: hidden;
+  position: absolute;
+  bottom: 10px;
+}
