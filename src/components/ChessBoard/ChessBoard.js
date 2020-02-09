@@ -7,10 +7,11 @@ import ChessMan from '../ChessMan/ChessMan'
 
 
 // update state  to render 不能和直接操作dom动画同时存在
-// 点击格子事件保证准确触发
+// 点击格子而不是棋盘和棋子事件保证准确触发
 // 二维数组若要做备忘录模式，需要深拷贝[...arr],slice(0) 都是浅拷贝
 // 事件是先从子元素开始冒泡的,如果子元素停止冒泡,父组件同样的事件不会触发
 // js 无法多线程操作,不可能存在两个关联的动画
+// 鼠标的client 坐标是相对于页面可视区说的
 
 const LENGTH = 26
 const CELL_SIZE = 25;
