@@ -11,9 +11,9 @@ const roles = {
 export default class ChessMan extends Component {
 
   render() {
-    const { roleType } = this.props;
+    const { size, roleType } = this.props;
     return (
-      <div onClick={this.props.onClick} className={`chessMan ${roles[roleType]}`}/>
+      <div style={{height:`${size}px`, width:`${size}px`}} onClick={this.props.onClick} className={`chessMan ${roles[roleType]}`}/>
     )
   }
 }

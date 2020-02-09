@@ -4,12 +4,13 @@ import React, { Component } from 'react'
 import './index.css'
 import ChessMan from '../ChessMan/ChessMan'
 
-const CELL_SIZE = 60;
 
 // update state  to render 不能和直接操作dom动画同时存在
 // 点击格子事件保证准确触发
 // 二维数组若要做备忘录模式，需要深拷贝[...arr],slice(0) 都是浅拷贝
 // 事件是先从子元素开始冒泡的,如果子元素停止冒泡,父组件同样的事件不会触发
+const CELL_SIZE = 60;
+const BOARD_SIZE = 480;
 
 export default class ChessBoard extends Component {
 
@@ -142,12 +143,12 @@ export default class ChessBoard extends Component {
 
   render() {
     return (
-      <div id="board">
+      <div id="board" style={{height:`${BOARD_SIZE}px`, width:`${BOARD_SIZE}px`}}>
       {
         this.mapArr.map((_,col)=><div className='col' key={col}>
         {
           _.map((_,row) => <div onClick={this.handleChessBoardCellClick} className='cell' key={`${row}-${col}`}>
-            <ChessMan roleType={this.mapArr[row][col]}/>
+            <ChessMan size={CELL_SIZE} roleType={this.mapArr[row][col]}/>
           </div>)
         }
         </div>)
