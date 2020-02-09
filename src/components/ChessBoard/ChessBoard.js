@@ -98,7 +98,8 @@ export default class ChessBoard extends Component {
           actions:[
             {
               target:this.selectedChessMan.view,
-              op: 'move'
+              op: 'move',
+              path:this.selectedChessMan.view.style.transform
             },
             {
               target:chessManView,
@@ -113,7 +114,8 @@ export default class ChessBoard extends Component {
           actions:[
             {
               target:this.selectedChessMan.view,
-              op: 'move'
+              op: 'move',
+              path:this.selectedChessMan.view.style.transform
             }
           ]
         })
@@ -144,13 +146,38 @@ export default class ChessBoard extends Component {
       })
   }
 
-  startMemo = () =>{
+  moveForward(target, path){
+    target.style.transform = path
+  }
+
+  memoNextStep(i){
+    const { actions, map } = this.memo[i]
+    this.mapArr = map
+    actions.forEach(action =>{
+      const { target, op, path } = action
+      if(op === 'kill')
+      {
+        target.style.display = 'block'
+      } else {
+        this.moveForward(target, path)
+      }
+    })
+  }
+
+  startMemo = (direction) =>{
     let i = 1
     const timer = setInterval(() => {
-      if(this.memo.length - i < 0){
-        return window.clearInterval(timer)
+      if(direction < 0){
+        if(this.memo.length - i < 0){
+          return window.clearInterval(timer)
+        }
+        this.memoLastStep(this.memo.length - i)
+      } else{
+        if(i - 1 === this.memo.length){
+          return window.clearInterval(timer)
+        }
+        this.memoNextStep(i - 1)
       }
-      this.memoLastStep(this.memo.length - i)
       i++;
     }, 1000);
   }
