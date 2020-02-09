@@ -215,6 +215,25 @@ export default class ChessBoard extends Component {
     }
   }
 
+  dictArr = []
+
+  takeSnapshot(){
+    const dict = []
+    for(let row = 0;row < LENGTH;row++){
+      for(let col = 0;col < LENGTH;col++){
+        if((row > 4 && row < LENGTH - 4 - 1 )&& (col > 4 && col < LENGTH - 4 - 1) && this.mapArr[row][col] === 1){
+          dict.push({row,col})
+        }
+      }
+    }
+    this.dictArr.push(dict)
+    console.log(this.dictArr)
+  }
+
+  autoPlay(){
+
+  }
+
   render() {
     return (
       <div id="board" style={{height:`${BOARD_SIZE}px`, width:`${BOARD_SIZE}px`}}>
