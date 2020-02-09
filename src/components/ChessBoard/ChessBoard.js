@@ -267,8 +267,8 @@ export default class ChessBoard extends Component {
     const randomEdgeArr = this.getRandomArr(this.edgeArr, total)
     
     let i = 0
-    setInterval(() => {
-        if(i < this.dictArr.length){
+    // setInterval(() => {
+        while(i < this.dictArr.length){
           // 第一个字
           let word = this.dictArr[i]
           // 笔画用定时器取出
@@ -292,9 +292,10 @@ export default class ChessBoard extends Component {
               window.clearInterval(timer)
             }
           }, 1000);
+
+          i++
         }
-        i++
-    }, 1000);
+    // }, 1000);
 
   }
 
