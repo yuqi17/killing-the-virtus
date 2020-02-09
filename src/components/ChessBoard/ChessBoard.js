@@ -49,6 +49,17 @@ export default class ChessBoard extends Component {
 
   selectedChessMan = null
   memo = []
+  edgeArr = []
+
+  componentDidMount(){
+    for(let row = 0;row < LENGTH;row++){
+      for(let col = 0;col < LENGTH;col++){
+        if(this.mapArr[row][col] === 1){
+          this.edgeArr.push({row,col})
+        }
+      }
+    }
+  }
 
   calc(arr, row1,col1,row,col){
     const newArr = JSON.parse(JSON.stringify(arr))//arr.slice(0)//[...arr];
