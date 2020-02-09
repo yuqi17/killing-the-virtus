@@ -2,8 +2,8 @@
   transition:all ease .3s;
 }
 
-.bat{
-  background-image: url(./bat.png);
+.heart{
+  background-image: url(./heart.png);
   background-repeat: no-repeat;
   background-size: contain;
   background-position: center;

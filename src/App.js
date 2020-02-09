@@ -11,12 +11,29 @@ export default class App extends Component {
     this.refs.board.startMemo(1)
   }
 
+  handleBackPlayClick = () => {
+    this.refs.board.startMemo(-1)
+  }
+
+  handleForwardPlayClick = () => {
+    this.refs.board.startMemo(1)
+  }
+
+  handleAutoPlay = () => {
+    this.refs.board.startMemo(1)
+  }
+
+
   render() {
     return (
       <div className="App">
         <ChessBoard ref='board'/>
-        <button onClick={this.handleBackClick}>back</button>
-        <button onClick={this.handleForwardClick}>forward</button>
+        <button onClick={this.handleBackClick}>上一步</button>
+        <button onClick={this.handleForwardClick}>下一步</button>
+        <button onClick={this.handleBackPlayClick}>过程反演</button>
+        <button onClick={this.handleForwardPlayClick}>过程正演</button>
+        <button onClick={this.handleAutoPlay}>自动编排演示</button>
+
       </div>
     )
   }

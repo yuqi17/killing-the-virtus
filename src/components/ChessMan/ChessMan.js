@@ -4,7 +4,7 @@ import './index.css'
 
 const roles = {
   0:'ground',
-  1:'bat',
+  1:'heart',
   2:'swords'
 }
 
