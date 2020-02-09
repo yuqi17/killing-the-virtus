@@ -10,6 +10,7 @@ import ChessMan from '../ChessMan/ChessMan'
 // 点击格子事件保证准确触发
 // 二维数组若要做备忘录模式，需要深拷贝[...arr],slice(0) 都是浅拷贝
 // 事件是先从子元素开始冒泡的,如果子元素停止冒泡,父组件同样的事件不会触发
+// js 无法多线程操作,不可能存在两个关联的动画
 
 const LENGTH = 26
 const CELL_SIZE = 25;
@@ -227,6 +228,7 @@ export default class ChessBoard extends Component {
     }
   }
 
+
   dictArr = []
 
   takeSnapshot(){
@@ -260,39 +262,34 @@ export default class ChessBoard extends Component {
     return box;
   }
 
+
   autoPlay(){
-    const total = this.dictArr.reduce((sum, cur) => sum + cur.length, 0)
-    
+    // const total = this.dictArr.reduce((sum, cur) => sum + cur.length, 0)
     // 总随机边缘项
-    const randomEdgeArr = this.getRandomArr(this.edgeArr, total)
-    
-    /////////
-    let i = 0
-    // setInterval(() => {
-        while(i < this.dictArr.length){
-          // 第一个字
-          let word = this.dictArr[i]
-          // 笔画用定时器取出
-          let j = 0
+    // const randomEdgeArr = this.getRandomArr(this.edgeArr, total)
+    // let i = 0
+    // while(i < this.dictArr.length){
+    //   // 第一个字
+    //   let word = this.dictArr[i]
+    //   // 笔画用定时器取出
+    //   let j = 0
 
-            while(j < word.length)// 执行移动操作
-            {
-              const { row:row1 , col:col1 } = randomEdgeArr[j]
-              const {  row , col } = word[j]
-              
-              const view = ReactDOM.findDOMNode(this.refs[`${row1}-${col1}`])
-              console.log(view, row1 , col1,row , col)
-              
-              this.moveChessMan(view, row1 , col1)
-              this.moveChessMan(view, row , col)
+    //     while(j < word.length)// 执行移动操作
+    //     {
+    //       const { row:row1 , col:col1 } = randomEdgeArr[j]
+    //       const {  row , col } = word[j]
+          
+    //       const view = ReactDOM.findDOMNode(this.refs[`${row1}-${col1}`])
+    //       console.log(view, row1 , col1,row , col)
+          
+    //       this.moveChessMan(view, row1 , col1)
+    //       this.moveChessMan(view, row , col)
 
-              j ++;
-            }
+    //       j ++;
+    //     }
 
-          i++
-        }
-    // }, 1000);
-
+    //   i++
+    // }
   }
 
   render() {
