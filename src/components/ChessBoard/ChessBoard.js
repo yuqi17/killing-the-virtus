@@ -1,6 +1,7 @@
 
 
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import './index.css'
 import ChessMan from '../ChessMan/ChessMan'
 
@@ -241,7 +242,59 @@ export default class ChessBoard extends Component {
     console.log(this.dictArr)
   }
 
+  // 随机自定个数的二维数组项
+  getRandomArr(arr , size){
+    const { random, floor } = Math;
+    const box = []
+    const unique = {}
+    // 二维随机的想法
+    // const x = floor(random() * arr.length)
+    // const y = floor(random() * arr.length)
+    // const { row, col }  = arr[x][y]
+    
+    while(box.length !== size){
+      const { row, col } = arr[floor(random() * arr.length)]
+      if(!unique[`${row}${col}`])
+        box.push({row, col})
+    } 
+    return box;
+  }
+
   autoPlay(){
+    const total = this.dictArr.reduce((sum, cur) => sum + cur.length, 0)
+    
+    // 总随机边缘项
+    const randomEdgeArr = this.getRandomArr(this.edgeArr, total)
+    
+    let i = 0
+    setInterval(() => {
+        if(i < this.dictArr.length){
+          // 第一个字
+          let word = this.dictArr[i]
+          // 笔画用定时器取出
+          let j = 0
+
+          const timer = setInterval(() => {
+            if(j < word.length)// 执行移动操作
+            {
+              const { row:row1 , col:col1 } = randomEdgeArr[j]
+              const {  row , col } = word[j]
+              
+              const view = ReactDOM.findDOMNode(this.refs[`${row1}-${col1}`])
+              console.log(view, row1 , col1,row , col)
+              
+              this.moveChessMan(view, row1 , col1)
+              this.moveChessMan(view, row , col)
+
+              j ++;
+            } else {
+              j = 0
+              window.clearInterval(timer)
+            }
+          }, 1000);
+        }
+        i++
+    }, 1000);
 
   }
 
@@ -251,7 +304,7 @@ export default class ChessBoard extends Component {
       {
         this.mapArr.map((_,col)=><div className='col' key={col}>
         {
-          _.map((_,row) => <div onClick={this.handleChessBoardCellClick} className='cell' key={`${row}-${col}`}>
+          _.map((_,row) => <div onClick={this.handleChessBoardCellClick} className='cell' id={`${row}-${col}`} ref={`${row}-${col}`} key={`${row}-${col}`}>
             <ChessMan size={CELL_SIZE} roleType={this.mapArr[row][col]}/>
           </div>)
         }
