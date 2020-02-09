@@ -1,7 +1,7 @@
 
 
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
+// import ReactDOM from 'react-dom'
 import './index.css'
 import ChessMan from '../ChessMan/ChessMan'
 
@@ -221,8 +221,6 @@ export default class ChessBoard extends Component {
         }
       }, 1000);
     } else {
-      // direction > 0 ? this.count++ : this.count --
-      
       if(!this.process(direction, this.count))
         this.count ++;
     }
