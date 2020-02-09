@@ -266,6 +266,7 @@ export default class ChessBoard extends Component {
     // 总随机边缘项
     const randomEdgeArr = this.getRandomArr(this.edgeArr, total)
     
+    /////////
     let i = 0
     // setInterval(() => {
         while(i < this.dictArr.length){
@@ -274,8 +275,7 @@ export default class ChessBoard extends Component {
           // 笔画用定时器取出
           let j = 0
 
-          const timer = setInterval(() => {
-            if(j < word.length)// 执行移动操作
+            while(j < word.length)// 执行移动操作
             {
               const { row:row1 , col:col1 } = randomEdgeArr[j]
               const {  row , col } = word[j]
@@ -287,11 +287,7 @@ export default class ChessBoard extends Component {
               this.moveChessMan(view, row , col)
 
               j ++;
-            } else {
-              j = 0
-              window.clearInterval(timer)
             }
-          }, 1000);
 
           i++
         }
