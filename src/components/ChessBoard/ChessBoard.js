@@ -50,6 +50,12 @@ export default class ChessBoard extends Component {
       const type = this.mapArr[row][col];
       const { type:type1, row:row1, col:col1 } = this.selectedChessMan
       
+      if(type1 === 0)//先点击空白格子，没有意义
+      {
+        this.selectedChessMan = null
+        return console.log('0')
+      }
+      
       if(row1 === row && col1 === col){
         this.selectedChessMan = null
         return console.log('1')
