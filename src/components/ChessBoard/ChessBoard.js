@@ -49,13 +49,12 @@ export default class ChessBoard extends Component {
 
       const type = this.mapArr[row][col];
       const { type:type1, row:row1, col:col1 } = this.selectedChessMan
-      
       if(type1 === 0)//先点击空白格子，没有意义
       {
         this.selectedChessMan = null
         return console.log('0')
       }
-      
+
       if(row1 === row && col1 === col){
         this.selectedChessMan = null
         return console.log('1')
@@ -66,6 +65,42 @@ export default class ChessBoard extends Component {
         return console.log('2')
       }
 
+      const dx = col1 - col
+      const dy = row1 - row
+      const distance = Math.sqrt(Math.pow(dx,2) + Math.pow(dy,2))
+
+      if(distance > 1 && distance < 2){
+        this.selectedChessMan = null
+        return console.log('no skew')
+      }
+
+      if(distance > 2){
+        this.selectedChessMan = null
+        return console.log('too far')
+      }
+
+      if(type1 === 1){
+        if(distance === 2){
+          this.selectedChessMan = null
+          return console.log('bat no 2 step')
+        }
+        if(type === 2){
+          this.selectedChessMan = null
+          return console.log('can not eat')
+        }
+      }
+
+      if(type1 === 2){
+        
+        if(distance === 2 && type !== 1){
+          this.selectedChessMan = null
+          return console.log('no eat')
+        }
+        if(distance === 1 && type === 1){
+          this.selectedChessMan = null
+          return console.log('no one step eat')
+        }
+      }
       
       if(this.memo.length === 0){
         this.memo.push({
