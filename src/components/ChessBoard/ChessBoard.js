@@ -34,6 +34,43 @@ export default class ChessBoard extends Component {
     return newArr
   }
 
+  checkWin(arr){
+    const amtMonster = arr.flat().filter(item => item === 1).length
+    if(amtMonster < 4){
+      return 2
+    }
+    // const amtSwords = arr.flat().filter(item => item === 2).length
+    // if(amtSwords === 0){
+    //   return 1
+    // }
+    let sum = 0;
+    const len = arr.length
+    for(let i = 0;i < len;i++){
+      for(let j = 0;j < len;j++){
+        if(arr[i][j] ===  2){
+          if(i - 1 >= 0 && arr[i - 1][j] === 1) {
+            sum += 1
+          }
+          if(i + 1 < len && arr[i + 1][j] === 1) {
+            sum += 1
+          }
+          if(i - 1 >= 0 && arr[i][j - 1] === 1) {
+            sum += 1
+          }
+          if(i + 1 < len && arr[i][j + 1] === 1) {
+            sum += 1
+          }
+        }
+      }
+    }
+
+    if(sum === 8){
+      return 1
+    }
+
+    return 0
+  }
+
   handleChessBoardCellClick = (e)=>{
     
     const col = Math.floor(e.clientX / CELL_SIZE)
@@ -146,6 +183,11 @@ export default class ChessBoard extends Component {
         })
       }
       this.selectedChessMan = null
+      // check win
+      const role = this.checkWin(this.mapArr)
+      if(role !== 0){
+        console.log(role + ' wined')
+      }
     }
   }
 
