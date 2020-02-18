@@ -68,16 +68,32 @@ export default class ChessBoard extends Component {
     return 0
   }
 
+  /////// 网络版本 myRole 应该由服务器决定先后，然后两个客户端分配不同的myRole
+  /////// turn = myRole 该我走，走完后修改turn 值为对方
+  myRole = 1 
   turn = 1
+
+  ////////// socket 接收模拟
+  receiveData({ type, data }){
+    if(type === 'move'){
+      const { row, col } = data
+      this.moveChessMan(row, col)
+    } else if(type === 'turn'){
+      this.turn = data.turn
+    }
+  }
 
   handleChessBoardCellClick = e => {
     const col = Math.floor(e.clientX / CELL_SIZE)
     const row = Math.floor(e.clientY / CELL_SIZE)
-    this.moveChessMan(row, col)
+    const step = this.moveChessMan(row, col)
+    
+    // send move data
+    // 如果step = 2 还要发送轮流的标志
+
   }
 
   moveChessMan = (row, col)=>{
-    
     const chessManView = ReactDOM.findDOMNode(this.refs[`${row}-${col}`]).firstChild//e.currentTarget.firstChild
     if(!this.selectedChessMan)
     {
@@ -85,10 +101,12 @@ export default class ChessBoard extends Component {
         view:chessManView,
         type:this.mapArr[row][col], row, col
       };
+      return 1// 第一步
     } else {
       const type = this.mapArr[row][col];
       const { type:type1, row:row1, col:col1 } = this.selectedChessMan
      
+      // 这个可能要去掉
       if(type1 !== this.turn){
         this.selectedChessMan = null
         return console.log('not your turn')
@@ -191,12 +209,15 @@ export default class ChessBoard extends Component {
         })
       }
       this.selectedChessMan = null
+
       this.turn = this.turn === 1 ? 2 : 1
+      // send
       // check win
       const role = this.checkWin(this.mapArr)
       if(role !== 0){
         console.log(role + ' wined')
       }
+      return 2
     }
   }
 
