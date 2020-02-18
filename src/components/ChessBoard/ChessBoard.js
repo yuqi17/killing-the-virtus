@@ -1,6 +1,7 @@
 
 
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import './index.css'
 import ChessMan from '../ChessMan/ChessMan'
 
@@ -69,11 +70,15 @@ export default class ChessBoard extends Component {
 
   turn = 1
 
-  handleChessBoardCellClick = (e)=>{
-    
+  handleChessBoardCellClick = e => {
     const col = Math.floor(e.clientX / CELL_SIZE)
     const row = Math.floor(e.clientY / CELL_SIZE)
-    const chessManView = e.currentTarget.firstChild
+    this.moveChessMan(row, col)
+  }
+
+  moveChessMan = (row, col)=>{
+    
+    const chessManView = ReactDOM.findDOMNode(this.refs[`${row}-${col}`]).firstChild//e.currentTarget.firstChild
     if(!this.selectedChessMan)
     {
       this.selectedChessMan = {
@@ -233,7 +238,7 @@ export default class ChessBoard extends Component {
       {
         this.mapArr.map((_,col)=><div className='col' key={col}>
         {
-          _.map((_,row) => <div onClick={this.handleChessBoardCellClick} className='cell' key={`${row}-${col}`}>
+          _.map((_,row) => <div onClick={this.handleChessBoardCellClick} className='cell' ref={`${row}-${col}`} key={`${row}-${col}`}>
             <ChessMan roleType={this.mapArr[row][col]}/>
           </div>)
         }
