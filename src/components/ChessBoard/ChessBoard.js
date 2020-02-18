@@ -44,16 +44,16 @@ export default class ChessBoard extends Component {
     for(let i = 0;i < len;i++){
       for(let j = 0;j < len;j++){
         if(arr[i][j] ===  2){
-          if(i - 1 >= 0 && arr[i - 1][j] === 1) {
+          if(i - 1 >= 0 && arr[i - 1][j] !== 0) {
             sum += 1
           }
-          if(i + 1 < len && arr[i + 1][j] === 1) {
+          if(i + 1 < len && arr[i + 1][j] !== 0) {
             sum += 1
           }
-          if(i - 1 >= 0 && arr[i][j - 1] === 1) {
+          if(i - 1 >= 0 && arr[i][j - 1] !== 0) {
             sum += 1
           }
-          if(i + 1 < len && arr[i][j + 1] === 1) {
+          if(i + 1 < len && arr[i][j + 1] !== 0) {
             sum += 1
           }
         }
