@@ -39,10 +39,6 @@ export default class ChessBoard extends Component {
     if(amtMonster < 4){
       return 2
     }
-    // const amtSwords = arr.flat().filter(item => item === 2).length
-    // if(amtSwords === 0){
-    //   return 1
-    // }
     let sum = 0;
     const len = arr.length
     for(let i = 0;i < len;i++){
@@ -71,6 +67,8 @@ export default class ChessBoard extends Component {
     return 0
   }
 
+  turn = 1
+
   handleChessBoardCellClick = (e)=>{
     
     const col = Math.floor(e.clientX / CELL_SIZE)
@@ -83,9 +81,14 @@ export default class ChessBoard extends Component {
         type:this.mapArr[row][col], row, col
       };
     } else {
-
       const type = this.mapArr[row][col];
       const { type:type1, row:row1, col:col1 } = this.selectedChessMan
+     
+      if(type1 !== this.turn){
+        this.selectedChessMan = null
+        return console.log('not your turn')
+      }
+      
       if(type1 === 0)//先点击空白格子，没有意义
       {
         this.selectedChessMan = null
@@ -183,6 +186,7 @@ export default class ChessBoard extends Component {
         })
       }
       this.selectedChessMan = null
+      this.turn = this.turn === 1 ? 2 : 1
       // check win
       const role = this.checkWin(this.mapArr)
       if(role !== 0){
