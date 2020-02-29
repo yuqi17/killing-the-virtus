@@ -68,9 +68,10 @@ export default class ChessBoard extends Component {
   /**
    * 
    * {
-   *  type:move|turn
+   *  receiver,
+   *  type:move|turn,
    *  data:{
-   *      row,col | turn
+   *      row,col | turn,
    *  }
    * }
    */
@@ -80,6 +81,32 @@ export default class ChessBoard extends Component {
       this.moveChessMan(row, col)
     } else if (type === 'turn') {
       this.turn = data.turn
+    }
+  }
+
+  handleChessBoardCellClick = e => {
+    const col = Math.floor(e.clientX / CELL_SIZE)
+    const row = Math.floor(e.clientY / CELL_SIZE)
+    const step = this.moveChessMan(row, col)
+
+    if(step === 2){//如果step = 2 还要发送轮流的标志
+
+      this.socket.emit('message',{
+        type:'turn',
+        receiver: this.myRole === 1 ? 0 : 1,
+        data:{
+          turn:this.turn
+        }
+      })
+
+      this.socket.emit('message',{
+        type:'move',
+        receiver: this.myRole === 1 ? 0 : 1,
+        data:{
+          row,
+          col
+        }
+      })
     }
   }
 
@@ -121,28 +148,6 @@ export default class ChessBoard extends Component {
     }
 
     return 0
-  }
-
-  handleChessBoardCellClick = e => {
-    const col = Math.floor(e.clientX / CELL_SIZE)
-    const row = Math.floor(e.clientY / CELL_SIZE)
-    const step = this.moveChessMan(row, col)
-
-    if(step === 2){//如果step = 2 还要发送轮流的标志
-
-      this.socket.emit('message',{
-        type:'turn',
-        receiver: this.myRole === 1 ? 0 : 1,
-        turn:this.turn
-      })
-
-      this.socket.emit('message',{
-        type:'move',
-        receiver: this.myRole === 1 ? 0 : 1,
-        row,
-        col
-      })
-    }
   }
 
   moveChessMan = (row, col) => {
