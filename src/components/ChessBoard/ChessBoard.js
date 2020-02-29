@@ -6,6 +6,11 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import ChessMan from '../ChessMan/ChessMan'
 
+const names = {
+  1: '蝙蝠',
+  2: '骑士'
+}
+
 const CELL_SIZE = 60;
 
 // update state  to render 不能和直接操作dom动画同时存在
@@ -55,16 +60,19 @@ export default class ChessBoard extends Component {
       console.log(data)
     })
 
-    this.socket.on('identified-receiver', function ({ role, receiver }) {
-      this.myRole = role
-      this.receiver = receiver
-    });
-
     this.socket.on('offline', function (data) {
       console.log(data)
     });
 
+    this.socket.on('identified-receiver',  ({ role, receiver }) =>{
+      this.myRole = role
+      this.receiver = receiver
+      this.forceUpdate()
+      console.log(`你的角色是${names[this.myRole]} 对手是${this.receiver}`)
+    });
+
     this.socket.on('message', function (data) {
+      console.log(data)
       this.receiveData(data)
     });
   }
@@ -168,10 +176,14 @@ export default class ChessBoard extends Component {
       const type = this.mapArr[row][col];
       const { type: type1, row: row1, col: col1 } = this.selectedChessMan
 
-      // 这个可能要去掉
-      if (type1 !== this.turn) {
+      if (this.myRole !== this.turn) {
         this.selectedChessMan = null
-        return console.log('not your turn')
+        return console.log('不该你先走')
+      }
+
+      if(type1 !== this.myRole){
+        this.selectedChessMan = null
+        return console.log('该棋子不是你的角色')
       }
 
       if (type1 === 0)//先点击空白格子，没有意义
@@ -277,10 +289,7 @@ export default class ChessBoard extends Component {
       // check win
       const role = this.checkWin(this.mapArr)
       if (role !== 0) {
-        const names = {
-          1: '蝙蝠',
-          2: '骑士'
-        }
+        
         const message = names[role] + ' wined'
         alert(message)
         this.socket.emit('message',{
@@ -328,17 +337,21 @@ export default class ChessBoard extends Component {
 
   render() {
     return (
-      <div id="board">
-        {
-          this.mapArr.map((_, col) => <div className='col' key={col}>
-            {
-              _.map((_, row) => <div onClick={this.handleChessBoardCellClick} className='cell' ref={`${row}-${col}`} key={`${row}-${col}`}>
-                <ChessMan roleType={this.mapArr[row][col]} />
-              </div>)
-            }
-          </div>)
-        }
+      <div>
+        <div id="board">
+          {
+            this.mapArr.map((_, col) => <div className='col' key={col}>
+              {
+                _.map((_, row) => <div onClick={this.handleChessBoardCellClick} className='cell' ref={`${row}-${col}`} key={`${row}-${col}`}>
+                  <ChessMan roleType={this.mapArr[row][col]} />
+                </div>)
+              }
+            </div>)
+          }
+        </div>
+        <span>{this.nickname}的角色是：{names[this.myRole]}，对手是：{this.receiver}</span>
       </div>
+      
     )
   }
 }
