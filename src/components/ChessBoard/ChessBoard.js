@@ -28,31 +28,55 @@ export default class ChessBoard extends Component {
 
   selectedChessMan = null
   memo = []
-
+  socket = null
 
   componentDidMount() {
 
     // 下面这个写法链接不上，还必须有path
     // var socket = io.connect(`http://localhost:3001/game`)
 
-    let socket = require('socket.io-client')('http://localhost:8080/game',{
+    this.socket = require('socket.io-client')('http://localhost:8080/game',{
       query:{
         nickname:Date.now()
       }
     });
 
-    socket.on('connect', function () {
-      console.log('connect')
-      socket.emit('chat',{message:111})
+    this.socket.on('connection', data =>{
+      console.log(data)
+    })
+
+    this.socket.on('identified', function ({ role }) {
+      this.myRole = role
     });
 
-    socket.on('msg', function (data) {
+    this.socket.on('offline', function (data) {
       console.log(data)
     });
 
-    socket.on('disconnect', function () {
-      console.log('disconnect')
+    this.socket.on('message', function (data) {
+      this.receiveData(data)
     });
+  }
+
+  myRole = 1
+  turn = 1
+
+  /**
+   * 
+   * {
+   *  type:move|turn
+   *  data:{
+   *      row,col | turn
+   *  }
+   * }
+   */
+  receiveData({ type, data }) {
+    if (type === 'move') {
+      const { row, col } = data
+      this.moveChessMan(row, col)
+    } else if (type === 'turn') {
+      this.turn = data.turn
+    }
   }
 
   calc(arr, row1, col1, row, col) {
@@ -95,29 +119,22 @@ export default class ChessBoard extends Component {
     return 0
   }
 
-  /////// 网络版本 myRole 应该由服务器决定先后，然后两个客户端分配不同的myRole
-  /////// turn = myRole 该我走，走完后修改turn 值为对方
-  myRole = 1
-  turn = 1
-
-  ////////// socket 接收模拟
-  receiveData({ type, data }) {
-    if (type === 'move') {
-      const { row, col } = data
-      this.moveChessMan(row, col)
-    } else if (type === 'turn') {
-      this.turn = data.turn
-    }
-  }
-
   handleChessBoardCellClick = e => {
     const col = Math.floor(e.clientX / CELL_SIZE)
     const row = Math.floor(e.clientY / CELL_SIZE)
     const step = this.moveChessMan(row, col)
 
-    // send move data
-    // 如果step = 2 还要发送轮流的标志
-
+    if(step === 2){//如果step = 2 还要发送轮流的标志
+      this.socket.emit('move',{
+        receiver: this.myRole === 1 ? 0 : 1,
+        row,
+        col
+      })
+      this.socket.emit('turn',{
+        receiver: this.myRole === 1 ? 0 : 1,
+        turn:this.turn
+      })
+    }
   }
 
   moveChessMan = (row, col) => {
@@ -237,7 +254,7 @@ export default class ChessBoard extends Component {
       this.selectedChessMan = null
 
       this.turn = this.turn === 1 ? 2 : 1
-      // send
+
       // check win
       const role = this.checkWin(this.mapArr)
       if (role !== 0) {
