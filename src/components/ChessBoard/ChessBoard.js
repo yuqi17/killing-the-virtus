@@ -71,7 +71,7 @@ export default class ChessBoard extends Component {
       console.log(`你的角色是${names[this.myRole]} 对手是${this.receiver}`)
     });
 
-    this.socket.on('message', function (data) {
+    this.socket.on('message',  (data) => {
       console.log(data)
       this.receiveData(data)
     });
@@ -88,10 +88,12 @@ export default class ChessBoard extends Component {
    * }
    */
   receiveData({ type, data }) {
-    if (type === 'move') {
+    if (type ==='choose') {
       const { row, col } = data
-      this.moveChessMan(row, col)
-    } else if (type === 'turn') {
+      this.moveChessMan(row, col, 'socket')
+    } else if (type === 'move') {
+      const { row, col } = data
+      this.moveChessMan(row, col, 'socket')
       this.turn = data.turn
     } else if(type === 'message'){
       alert(data.message)
@@ -101,22 +103,25 @@ export default class ChessBoard extends Component {
   handleChessBoardCellClick = e => {
     const col = Math.floor(e.clientX / CELL_SIZE)
     const row = Math.floor(e.clientY / CELL_SIZE)
-    const step = this.moveChessMan(row, col)
-
-    if(step === 2){//如果step = 2 还要发送轮流的标志
-
+    const step = this.moveChessMan(row, col,'click')
+    if(step === 1){
       this.socket.emit('message',{
-        type:'turn',
+        type:'choose',
         receiver: this.receiver,
         data:{
-          turn:this.turn
+          turn:this.turn === 1 ? 2 : 1,
+          row,
+          col
         }
       })
+    }
+    else if(step === 2){//如果step = 2 还要发送轮流的标志
 
       this.socket.emit('message',{
         type:'move',
         receiver: this.receiver,
         data:{
+          turn:this.turn === 1 ? 2 : 1,
           row,
           col
         }
@@ -164,27 +169,33 @@ export default class ChessBoard extends Component {
     return 0
   }
 
-  moveChessMan = (row, col) => {
+  moveChessMan = (row, col, from) => {
+    const type = this.mapArr[row][col]
+
+    if(from !== 'socket'){
+      if (this.myRole !== this.turn) {
+        return console.log('不该你先走')
+      }
+  
+      if(type !== this.myRole){
+        return console.log('该棋子不是你的角色')
+      }
+    }
+
     const chessManView = ReactDOM.findDOMNode(this.refs[`${row}-${col}`]).firstChild//e.currentTarget.firstChild
     if (!this.selectedChessMan) {
       this.selectedChessMan = {
         view: chessManView,
-        type: this.mapArr[row][col], row, col
+        type, 
+        row, 
+        col
       };
       return 1// 第一步
     } else {
       const type = this.mapArr[row][col];
       const { type: type1, row: row1, col: col1 } = this.selectedChessMan
 
-      if (this.myRole !== this.turn) {
-        this.selectedChessMan = null
-        return console.log('不该你先走')
-      }
 
-      if(type1 !== this.myRole){
-        this.selectedChessMan = null
-        return console.log('该棋子不是你的角色')
-      }
 
       if (type1 === 0)//先点击空白格子，没有意义
       {
