@@ -272,7 +272,11 @@ export default class ChessBoard extends Component {
       // check win
       const role = this.checkWin(this.mapArr)
       if (role !== 0) {
-        console.log(role + ' wined')
+        const names = {
+          1: '蝙蝠',
+          2: '骑士'
+        }
+        alert(names[role] + ' wined')
       }
       return 2
     }
