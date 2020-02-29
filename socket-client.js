@@ -1,23 +1,17 @@
-import Socket from "socket.io-client";
+import { io } from "socket.io-client";
 
-const io = getSocket();
+var socket = io(`http://localhost:3000`,{
+    query:Date.getTime()
+})
 
-export default io;
+socket.on('connect', function(){
+    console.log('connect')
+});
 
-/**
- * 建立 socket 连接. 返回连接后的对象
- * @returns {*}
- */
-function getSocket(){
-    const io = Socket(window.location.origin + '/chat',{
-        reconnection : true,
-        reconnectionDelay : 5000
-    });
+socket.on('event', function(data){
+    console.log('event')
+});
 
-    io.on("connect", () => {
-        console.log("socket. 连接成功");
-    });
-
-    require("./socketMonitor").socketMonitor(io);
-    return io;
-}
+socket.on('disconnect', function(){
+    console.log('disconnect')
+});
