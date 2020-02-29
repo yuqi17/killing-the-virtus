@@ -82,6 +82,8 @@ export default class ChessBoard extends Component {
       this.moveChessMan(row, col)
     } else if (type === 'turn') {
       this.turn = data.turn
+    } else if(type === 'message'){
+      alert(data.message)
     }
   }
 
@@ -276,7 +278,15 @@ export default class ChessBoard extends Component {
           1: '蝙蝠',
           2: '骑士'
         }
-        alert(names[role] + ' wined')
+        const message = names[role] + ' wined'
+        alert(message)
+        this.socket.emit('message',{
+          type:'notification',
+          receiver: this.myRole === 1 ? 0 : 1,
+          data:{
+            message
+          }
+        })
       }
       return 2
     }
