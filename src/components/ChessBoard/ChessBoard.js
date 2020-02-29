@@ -35,7 +35,7 @@ export default class ChessBoard extends Component {
     // 下面这个写法链接不上，还必须有path
     // var socket = io.connect(`http://localhost:3001/game`)
 
-    this.socket = require('socket.io-client')('http://localhost:8080/game',{
+    this.socket = io('http://localhost:8080/game',{
       query:{
         nickname:Date.now()
       }
