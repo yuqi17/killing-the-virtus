@@ -83,7 +83,7 @@ export default class ChessBoard extends Component {
     }
   }
 
-  calc(arr, row1, col1, row, col) {
+  updatedMapArr(arr, row1, col1, row, col) {
     const newArr = JSON.parse(JSON.stringify(arr))//arr.slice(0)//[...arr];
     newArr[row][col] = newArr[row1][col1]
     newArr[row1][col1] = 0
@@ -129,14 +129,18 @@ export default class ChessBoard extends Component {
     const step = this.moveChessMan(row, col)
 
     if(step === 2){//如果step = 2 还要发送轮流的标志
-      this.socket.emit('move',{
+
+      this.socket.emit('message',{
+        type:'turn',
+        receiver: this.myRole === 1 ? 0 : 1,
+        turn:this.turn
+      })
+
+      this.socket.emit('message',{
+        type:'move',
         receiver: this.myRole === 1 ? 0 : 1,
         row,
         col
-      })
-      this.socket.emit('turn',{
-        receiver: this.myRole === 1 ? 0 : 1,
-        turn:this.turn
       })
     }
   }
@@ -225,7 +229,7 @@ export default class ChessBoard extends Component {
       }
 
       //change data
-      this.mapArr = this.calc(this.mapArr, row1, col1, row, col)
+      this.mapArr = this.updatedMapArr(this.mapArr, row1, col1, row, col)
       //change view
       this.selectedChessMan.view.style.transform += `translate(${(col - col1) * CELL_SIZE}px,${(row - row1) * CELL_SIZE}px)`
       if (type !== 0) {
