@@ -30,14 +30,18 @@ export default class ChessBoard extends Component {
   memo = []
   socket = null
 
+  nickname = null
+
   componentDidMount() {
 
     // 下面这个写法链接不上，还必须有path
     // var socket = io.connect(`http://localhost:3001/game`)
 
-    this.socket = io('http://localhost:8080/game',{
+    this.nickname = prompt("Please enter your name","")
+
+    this.socket = io('http://192.168.1.10:8080/game',{
       query:{
-        nickname:Date.now()
+        nickname:this.nickname
       }
     });
 
