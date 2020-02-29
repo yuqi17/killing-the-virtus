@@ -26,6 +26,10 @@ export default class ChessBoard extends Component {
     [0, 0, 0, 0, 0, 0, 0, 0]
   ]
 
+  myRole = 1
+  
+  turn = 1
+
   selectedChessMan = null
   memo = []
   socket = null
@@ -61,9 +65,6 @@ export default class ChessBoard extends Component {
       this.receiveData(data)
     });
   }
-
-  myRole = 1
-  turn = 1
 
   /**
    * 
