@@ -36,6 +36,8 @@ export default class ChessBoard extends Component {
 
   nickname = null
 
+  receiver = null
+
   componentDidMount() {
 
     // 下面这个写法链接不上，还必须有path
@@ -53,8 +55,9 @@ export default class ChessBoard extends Component {
       console.log(data)
     })
 
-    this.socket.on('identified', function ({ role }) {
+    this.socket.on('identified-receiver', function ({ role, receiver }) {
       this.myRole = role
+      this.receiver = receiver
     });
 
     this.socket.on('offline', function (data) {
@@ -96,7 +99,7 @@ export default class ChessBoard extends Component {
 
       this.socket.emit('message',{
         type:'turn',
-        receiver: this.myRole === 1 ? 0 : 1,
+        receiver: this.receiver,
         data:{
           turn:this.turn
         }
@@ -104,7 +107,7 @@ export default class ChessBoard extends Component {
 
       this.socket.emit('message',{
         type:'move',
-        receiver: this.myRole === 1 ? 0 : 1,
+        receiver: this.receiver,
         data:{
           row,
           col
@@ -282,7 +285,7 @@ export default class ChessBoard extends Component {
         alert(message)
         this.socket.emit('message',{
           type:'notification',
-          receiver: this.myRole === 1 ? 0 : 1,
+          receiver: this.receiver,
           data:{
             message
           }
