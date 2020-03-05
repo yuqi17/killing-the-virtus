@@ -65,8 +65,7 @@ export default class ChessBoard extends Component {
       this.forceUpdate()
     });
 
-    this.socket.on('message',  (data) => {
-      console.log(data)
+    this.socket.on('message',  data => {
       this.receiveData(data)
     });
   }
@@ -88,7 +87,7 @@ export default class ChessBoard extends Component {
     } else if (type === 'move') {
       const { row, col } = data
       this.moveChessMan(row, col)
-    } else if(type === 'message'){
+    } else if(type === 'notification'){
       alert(data.message)
     }
   }
@@ -171,17 +170,20 @@ export default class ChessBoard extends Component {
   }
 
   moveChessMan = (row, col) => {
+    
     const chessManView = ReactDOM.findDOMNode(this.refs[`${row}-${col}`]).firstChild//e.currentTarget.firstChild
+    const type = this.mapArr[row][col];
+    console.log('chessManView choose->',`${row}-${col}`, chessManView)
     if (!this.selectedChessMan) {
       this.selectedChessMan = {
         view: chessManView,
-        type:this.mapArr[row][col], 
+        type, 
         row, 
         col
       };
+
       return 1// 第一步
     } else {
-      const type = this.mapArr[row][col];
       const { type: type1, row: row1, col: col1 } = this.selectedChessMan
       if (type1 === 0)//先点击空白格子，没有意义
       {
@@ -238,10 +240,18 @@ export default class ChessBoard extends Component {
       //change data
       this.mapArr = this.updatedMapArr(this.mapArr, row1, col1, row, col)
       //change view
+      console.log('\r\n')
+      console.log('================================================')
+      console.log(this.selectedChessMan.view)
+      console.log(this.selectedChessMan.view.style.transform)
+      console.log(`translate(${(col - col1) * CELL_SIZE}px,${(row - row1) * CELL_SIZE}px)`)
+      console.log('------------------------------------------------')
+      console.log('\r\n')
+
       this.selectedChessMan.view.style.transform += `translate(${(col - col1) * CELL_SIZE}px,${(row - row1) * CELL_SIZE}px)`
       if (type !== 0) {
         chessManView.style.display = 'none'
-        console.log(chessManView)
+        console.log('chessManView display:none', chessManView)
       }
       this.selectedChessMan = null
       this.turn = this.turn === 1 ? 2 : 1
