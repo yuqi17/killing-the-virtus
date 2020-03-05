@@ -32,15 +32,10 @@ export default class ChessBoard extends Component {
   ]
 
   myRole = 1
-  
   turn = 1
-
   selectedChessMan = null
-  memo = []
   socket = null
-
   nickname = null
-
   receiver = null
 
   componentDidMount() {
@@ -68,13 +63,11 @@ export default class ChessBoard extends Component {
       this.myRole = role
       this.receiver = receiver
       this.forceUpdate()
-      console.log(`你的角色是${names[this.myRole]} 对手是${this.receiver}`)
     });
 
     this.socket.on('message',  (data) => {
       console.log(data)
       this.receiveData(data)
-      this.forceUpdate()
     });
   }
 
@@ -126,7 +119,6 @@ export default class ChessBoard extends Component {
       })
     }
     else if(step === 2){//如果step = 2 还要发送轮流的标志
-
       this.socket.emit('message',{
         type:'move',
         receiver: this.receiver,
@@ -191,7 +183,6 @@ export default class ChessBoard extends Component {
     } else {
       const type = this.mapArr[row][col];
       const { type: type1, row: row1, col: col1 } = this.selectedChessMan
-
       if (type1 === 0)//先点击空白格子，没有意义
       {
         this.selectedChessMan = null
@@ -202,7 +193,6 @@ export default class ChessBoard extends Component {
         this.selectedChessMan = null
         return console.log('1')
       }
-
       if (type1 === type) {
         this.selectedChessMan = null
         return console.log('2')
@@ -245,57 +235,19 @@ export default class ChessBoard extends Component {
         }
       }
 
-      if (this.memo.length === 0) {
-        this.memo.push({
-          map: this.mapArr,
-          actions: [
-            {
-              target: this.selectedChessMan.view,
-              op: 'init'
-            }
-          ]
-        })
-      }
-
       //change data
       this.mapArr = this.updatedMapArr(this.mapArr, row1, col1, row, col)
       //change view
       this.selectedChessMan.view.style.transform += `translate(${(col - col1) * CELL_SIZE}px,${(row - row1) * CELL_SIZE}px)`
       if (type !== 0) {
         chessManView.style.display = 'none'
-        this.memo.push({
-          map: this.mapArr,
-          actions: [
-            {
-              target: this.selectedChessMan.view,
-              op: 'move'
-            },
-            {
-              target: chessManView,
-              op: 'kill'
-            },
-          ]
-        })
-      }
-      else {
-        this.memo.push({
-          map: this.mapArr,
-          actions: [
-            {
-              target: this.selectedChessMan.view,
-              op: 'move'
-            }
-          ]
-        })
+        console.log(chessManView)
       }
       this.selectedChessMan = null
-
       this.turn = this.turn === 1 ? 2 : 1
-
       // check win
       const role = this.checkWin(this.mapArr)
       if (role !== 0) {
-        
         const message = names[role] + ' wined'
         alert(message)
         this.socket.emit('message',{
@@ -309,38 +261,6 @@ export default class ChessBoard extends Component {
       return 2
     }
   }
-
-  moveBack(target) {
-    const arr = target.style.transform.replace(/, /g, '*').split(' ')
-    arr.pop()
-    target.style.transform = arr.map(t => t.replace('*', ',')).join(' ')
-  }
-
-  memoLastStep() {
-    const { actions, map } = this.memo.pop()
-
-    this.mapArr = map
-
-    actions.forEach(action => {
-      const { target, op } = action
-      if (op === 'kill') {
-        target.style.display = 'block'
-      } else {
-        this.moveBack(target)
-      }
-    })
-  }
-
-  startMemo = () => {
-    console.log(this.memo.length)
-    const timer = setInterval(() => {
-      if (this.memo.length === 0) {
-        return window.clearInterval(timer)
-      }
-      this.memoLastStep()
-    }, 1000);
-  }
-
   render() {
     return (
       <div>

@@ -11,7 +11,6 @@ export default class App extends Component {
     return (
       <div className="App">
         <ChessBoard ref='board'/>
-        <button onClick={this.handleClick}>反演</button>
       </div>
     )
   }
