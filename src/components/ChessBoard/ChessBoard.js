@@ -105,8 +105,8 @@ export default class ChessBoard extends Component {
     if(!this.selectedChessMan && type !== this.myRole){
         return console.log('不可移动非你移动的棋子')
     }
-
     const step = this.moveChessMan(row, col)
+    if(!step)return;
     if(step === 1){
       this.socket.emit('message',{
         type:'choose',
@@ -128,6 +128,103 @@ export default class ChessBoard extends Component {
       })
     }
   }
+
+
+  moveChessMan = (row, col) => {
+    
+    const chessManView = ReactDOM.findDOMNode(this.refs[`${row}-${col}`]).firstChild//e.currentTarget.firstChild
+    const type = this.mapArr[row][col];
+
+    if (!this.selectedChessMan) {
+      this.selectedChessMan = {
+        view: chessManView,
+        type, 
+        row, 
+        col
+      };
+
+      return 1// 第一步
+    } else {
+      const { type: type1, row: row1, col: col1 } = this.selectedChessMan
+      if (type1 === 0)//先点击空白格子，没有意义
+      {
+        this.selectedChessMan = null
+        return console.log('不可先点击空白位置')
+      }
+
+      if (row1 === row && col1 === col) {
+        this.selectedChessMan = null
+        return console.log('没有移动')
+      }
+    //   if (type1 === type) {
+    //     this.selectedChessMan = null
+    //     return console.log('同角色不可叠加')
+    //   }
+
+      const dx = col1 - col
+      const dy = row1 - row
+      const distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
+
+      if (distance > 1 && distance < 2) {
+        this.selectedChessMan = null
+        return console.log('非法移动')
+      }
+
+      if (distance > 2) {
+        this.selectedChessMan = null
+        return console.log('不可斜走')
+      }
+
+      if (type1 === 1) {
+        if (distance === 2) {
+          this.selectedChessMan = null
+          return console.log('蝙蝠不可大于2步')
+        }
+        if (type === 2) {
+          this.selectedChessMan = null
+          return console.log('不能吃')
+        }
+      }
+
+      if (type1 === 2) {
+
+        if (distance === 2 && type !== 1) {
+          this.selectedChessMan = null
+          return console.log('不能吃')
+        }
+        if (distance === 1 && type === 1) {
+          this.selectedChessMan = null
+          return console.log('一步不能吃')
+        }
+      }
+
+      //change data
+      this.mapArr[row][col] = this.mapArr[row1][col1]
+      this.mapArr[row1][col1] = 0
+      this.turn = this.turn === 1 ? 2 : 1
+
+      //change view
+      this.forceUpdate()
+
+      // check win
+      const role = this.checkWin(this.mapArr)
+      if (role !== 0) {
+        const message = names[role] + ' wined'
+        alert(message)
+        this.socket.emit('message',{
+          type:'notification',
+          receiver: this.receiver,
+          data:{
+            message
+          }
+        })
+      }
+
+      this.selectedChessMan = null
+      return 2
+    }
+  }
+
 
   updatedMapArr(arr, row1, col1, row, col) {
     const newArr = JSON.parse(JSON.stringify(arr))//arr.slice(0)//[...arr];
@@ -169,108 +266,7 @@ export default class ChessBoard extends Component {
     return 0
   }
 
-  moveChessMan = (row, col) => {
-    
-    const chessManView = ReactDOM.findDOMNode(this.refs[`${row}-${col}`]).firstChild//e.currentTarget.firstChild
-    const type = this.mapArr[row][col];
-    console.log('chessManView choose->',`${row}-${col}`, chessManView)
-    if (!this.selectedChessMan) {
-      this.selectedChessMan = {
-        view: chessManView,
-        type, 
-        row, 
-        col
-      };
-
-      return 1// 第一步
-    } else {
-      const { type: type1, row: row1, col: col1 } = this.selectedChessMan
-      if (type1 === 0)//先点击空白格子，没有意义
-      {
-        this.selectedChessMan = null
-        return console.log('0')
-      }
-
-      if (row1 === row && col1 === col) {
-        this.selectedChessMan = null
-        return console.log('1')
-      }
-      if (type1 === type) {
-        this.selectedChessMan = null
-        return console.log('2')
-      }
-
-      const dx = col1 - col
-      const dy = row1 - row
-      const distance = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2))
-
-      if (distance > 1 && distance < 2) {
-        this.selectedChessMan = null
-        return console.log('no skew')
-      }
-
-      if (distance > 2) {
-        this.selectedChessMan = null
-        return console.log('too far')
-      }
-
-      if (type1 === 1) {
-        if (distance === 2) {
-          this.selectedChessMan = null
-          return console.log('bat no 2 step')
-        }
-        if (type === 2) {
-          this.selectedChessMan = null
-          return console.log('can not eat')
-        }
-      }
-
-      if (type1 === 2) {
-
-        if (distance === 2 && type !== 1) {
-          this.selectedChessMan = null
-          return console.log('no eat')
-        }
-        if (distance === 1 && type === 1) {
-          this.selectedChessMan = null
-          return console.log('no one step eat')
-        }
-      }
-
-      //change data
-      this.mapArr = this.updatedMapArr(this.mapArr, row1, col1, row, col)
-      //change view
-      console.log('\r\n')
-      console.log('================================================')
-      console.log(this.selectedChessMan.view)
-      console.log(this.selectedChessMan.view.style.transform)
-      console.log(`translate(${(col - col1) * CELL_SIZE}px,${(row - row1) * CELL_SIZE}px)`)
-      console.log('------------------------------------------------')
-      console.log('\r\n')
-
-      this.selectedChessMan.view.style.transform += `translate(${(col - col1) * CELL_SIZE}px,${(row - row1) * CELL_SIZE}px)`
-      if (type !== 0) {
-        chessManView.style.display = 'none'
-        console.log('chessManView display:none', chessManView)
-      }
-      this.selectedChessMan = null
-      this.turn = this.turn === 1 ? 2 : 1
-      // check win
-      const role = this.checkWin(this.mapArr)
-      if (role !== 0) {
-        const message = names[role] + ' wined'
-        alert(message)
-        this.socket.emit('message',{
-          type:'notification',
-          receiver: this.receiver,
-          data:{
-            message
-          }
-        })
-      }
-      return 2
-    }
-  }
+  
   render() {
     return (
       <div>
